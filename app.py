@@ -115,7 +115,7 @@ if stock_ticker:
                 st.write(f"\nAnalyzing **{stock_ticker}** (last 1 year):")
 
                 # Calculate daily returns
-                stock_data['Daily Return'] = stock_data['Adj Close'].pct_change()
+                stock_data['Daily Return'] = stock_data['Close'].pct_change()
 
                 # Calculate volatility (standard deviation of daily returns)
                 volatility = stock_data['Daily Return'].std()
@@ -124,8 +124,8 @@ if stock_ticker:
                 avg_daily_return = stock_data['Daily Return'].mean()
 
                 # Calculate total price change over the period
-                initial_price = stock_data['Adj Close'].iloc[0]
-                final_price = stock_data['Adj Close'].iloc[-1]
+                initial_price = stock_data['Close'].iloc[0]
+                final_price = stock_data['Close'].iloc[-1]
                 price_change_percent = ((final_price - initial_price) / initial_price) * 100
 
                 st.write(f"- Daily Volatility (Std Dev of Daily Returns): **{volatility:.4f}**")
