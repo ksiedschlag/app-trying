@@ -115,24 +115,33 @@ if stock_ticker:
                 st.write(f"\nAnalyzing **{stock_ticker}** (last 1 year):")
 
                
- # Get close prices
-close_prices = stock_data['Close']
+if stock_ticker:
+    with st.spinner(f'Fetching data for {stock_ticker}...'):
+        try:
+            # Fetch data for the last year
+            stock_data = yf.download(stock_ticker, period="1y", progress=False)
 
-# Convert DataFrame column to Series if needed
-if isinstance(close_prices, pd.DataFrame):
-    close_prices = close_prices.squeeze()
+            if not stock_data.empty:
+                st.write(f"\nAnalyzing **{stock_ticker}** (last 1 year):")
 
-# Calculate daily returns
-stock_data['Daily Return'] = close_prices.pct_change()
+                # Get close prices
+                close_prices = stock_data['Close']
 
-# Calculate volatility and average return
-volatility = float(stock_data['Daily Return'].std())
-avg_daily_return = float(stock_data['Daily Return'].mean())
+                # Convert DataFrame column to Series if needed
+                if isinstance(close_prices, pd.DataFrame):
+                    close_prices = close_prices.squeeze()
 
-# Calculate total price change
-initial_price = float(close_prices.iloc[0])
-final_price = float(close_prices.iloc[-1])
-price_change_percent = ((final_price - initial_price) / initial_price) * 100
+                # Calculate daily returns
+                stock_data['Daily Return'] = close_prices.pct_change()
+
+                # Calculate volatility and average return
+                volatility = float(stock_data['Daily Return'].std())
+                avg_daily_return = float(stock_data['Daily Return'].mean())
+
+                # Calculate total price change
+                initial_price = float(close_prices.iloc[0])
+                final_price = float(close_prices.iloc[-1])
+                price_change_percent = ((final_price - initial_price) / initial_price) * 100
 
                 st.write(f"- Daily Volatility (Std Dev of Daily Returns): **{volatility:.4f}**")
                 st.write(f"- Average Daily Return: **{avg_daily_return:.4f}**")
@@ -168,7 +177,8 @@ price_change_percent = ((final_price - initial_price) / initial_price) * 100
                     st.write(f"  ❌ Total price change ({price_change_percent:.2f}%) is below your **{profile}** profile's minimum growth expectation ({profile_criteria['min_price_change_percent']:.2f}%).")
 
                 st.write("\n---")
-                # Final decision: all factors must be positive to recommend investing
+
+                # Final decision
                 if all(invest_decision_factors):
                     st.success(f"**Recommendation for {stock_ticker}: Consider Investing!** This stock aligns well with your **{profile}** risk profile and investment criteria.")
                 else:
@@ -180,4 +190,3 @@ price_change_percent = ((final_price - initial_price) / initial_price) * 100
         except Exception as e:
             st.error(f"An error occurred while fetching data for {stock_ticker}: {e}")
             st.info("Please ensure the ticker symbol is valid and try again. Sometimes, data for very obscure tickers may not be available via `yfinance`.")
-
