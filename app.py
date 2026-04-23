@@ -114,16 +114,6 @@ if stock_ticker:
             if not stock_data.empty:
                 st.write(f"\nAnalyzing **{stock_ticker}** (last 1 year):")
 
-               
-if stock_ticker:
-    with st.spinner(f'Fetching data for {stock_ticker}...'):
-        try:
-            # Fetch data for the last year
-            stock_data = yf.download(stock_ticker, period="1y", progress=False)
-
-            if not stock_data.empty:
-                st.write(f"\nAnalyzing **{stock_ticker}** (last 1 year):")
-
                 # Get close prices
                 close_prices = stock_data['Close']
 
@@ -190,3 +180,4 @@ if stock_ticker:
         except Exception as e:
             st.error(f"An error occurred while fetching data for {stock_ticker}: {e}")
             st.info("Please ensure the ticker symbol is valid and try again. Sometimes, data for very obscure tickers may not be available via `yfinance`.")
+           
