@@ -58,7 +58,14 @@ risk_profiles = {
             'volatility_threshold': 0.01, # Max daily return std dev (e.g., 1% daily std dev)
             'avg_return_threshold': 0.0005, # Min average daily return (e.g., 0.05% daily avg)
             'min_price_change_percent': 2 # Min price growth over last year (e.g., 2%)
-        }
+        },
+        'recommended_investments': [
+            {'ticker': 'BND', 'name': 'Vanguard Total Bond Market ETF', 'description': 'Broad bond market exposure for stability'},
+            {'ticker': 'AGG', 'name': 'iShares Core U.S. Aggregate Bond ETF', 'description': 'Investment-grade bonds with low volatility'},
+            {'ticker': 'KO', 'name': 'Coca-Cola', 'description': 'Dividend-paying defensive stock'},
+            {'ticker': 'PG', 'name': 'Procter & Gamble', 'description': 'Stable consumer staples with consistent dividends'},
+            {'ticker': 'JNJ', 'name': 'Johnson & Johnson', 'description': 'Healthcare leader with strong dividend history'},
+        ]
     },
     'Medium': {
         'goal': 'Achieve balanced growth while managing risk.',
@@ -69,7 +76,14 @@ risk_profiles = {
             'volatility_threshold': 0.02,
             'avg_return_threshold': 0.001,
             'min_price_change_percent': 5
-        }
+        },
+        'recommended_investments': [
+            {'ticker': 'VOO', 'name': 'Vanguard S&P 500 ETF', 'description': 'Diversified large-cap stock exposure'},
+            {'ticker': 'VTI', 'name': 'Vanguard Total Stock Market ETF', 'description': 'Complete U.S. stock market coverage'},
+            {'ticker': 'BND', 'name': 'Vanguard Total Bond Market ETF', 'description': 'Balanced bond allocation'},
+            {'ticker': 'MSFT', 'name': 'Microsoft', 'description': 'Tech leader with strong fundamentals'},
+            {'ticker': 'AAPL', 'name': 'Apple', 'description': 'Established tech company with solid growth'},
+        ]
     },
     'High': {
         'goal': 'Maximize growth potential and returns.',
@@ -80,7 +94,14 @@ risk_profiles = {
             'volatility_threshold': 0.03,
             'avg_return_threshold': 0.0015,
             'min_price_change_percent': 10
-        }
+        },
+        'recommended_investments': [
+            {'ticker': 'QQQ', 'name': 'Invesco QQQ Trust (Nasdaq-100)', 'description': 'Growth-focused tech-heavy index'},
+            {'ticker': 'VUG', 'name': 'Vanguard U.S. Growth ETF', 'description': 'High-growth stocks with higher volatility'},
+            {'ticker': 'TSLA', 'name': 'Tesla', 'description': 'High-growth tech company with significant upside potential'},
+            {'ticker': 'NVDA', 'name': 'NVIDIA', 'description': 'AI and semiconductor leader with strong growth'},
+            {'ticker': 'AMD', 'name': 'Advanced Micro Devices', 'description': 'Semiconductor company with high growth potential'},
+        ]
     }
 }
 
@@ -100,6 +121,13 @@ st.write(f"**Goal:** {risk_profiles[profile]['goal']}")
 st.write(f"**Recommended Asset Allocation:** {risk_profiles[profile]['allocation']}")
 st.write(f"**Rationale:** {risk_profiles[profile]['rationale']}")
 st.write(f"**Summary:** {risk_profiles[profile]['summary']}")
+
+# Display recommended investments for the user's risk profile
+st.subheader(f"📈 Recommended Investments for {profile} Risk Profile")
+st.write(f"Based on your risk tolerance, here are investments suitable for your profile:")
+
+recommendations_df = pd.DataFrame(risk_profiles[profile]['recommended_investments'])
+st.table(recommendations_df)
 
 # --- New Section: Stock Investment Recommendation ---
 st.subheader('Stock Investment Recommendation')
@@ -172,7 +200,7 @@ if stock_ticker:
                 if all(invest_decision_factors):
                     st.success(f"**Recommendation for {stock_ticker}: Consider Investing!** This stock aligns well with your **{profile}** risk profile and investment criteria.")
                 else:
-                    st.error(f"**Recommendation for {stock_ticker}: Do Not Invest at this time.** This stock does not fully align with your **{profile}** risk profile and investment criteria based on the metrics analyzed.")
+                    st.error(f"**Recommendation for {stock_ticker}: Do Not Invest at this time.** This stock does not fully align with your **{profile}** risk profile and investment criteria based on the criteria above.")
 
             else:
                 st.warning(f"Could not retrieve data for ticker: **{stock_ticker}**. Please check the symbol and try again.")
@@ -180,4 +208,3 @@ if stock_ticker:
         except Exception as e:
             st.error(f"An error occurred while fetching data for {stock_ticker}: {e}")
             st.info("Please ensure the ticker symbol is valid and try again. Sometimes, data for very obscure tickers may not be available via `yfinance`.")
-           
