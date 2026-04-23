@@ -114,19 +114,25 @@ if stock_ticker:
             if not stock_data.empty:
                 st.write(f"\nAnalyzing **{stock_ticker}** (last 1 year):")
 
-                # Calculate daily returns
-                stock_data['Daily Return'] = stock_data['Close'].pct_change()
+               
+ # Get close prices
+close_prices = stock_data['Close']
 
-                # Calculate volatility (standard deviation of daily returns)
-                volatility = stock_data['Daily Return'].std()
+# Convert DataFrame column to Series if needed
+if isinstance(close_prices, pd.DataFrame):
+    close_prices = close_prices.squeeze()
 
-                # Calculate average daily return
-                avg_daily_return = stock_data['Daily Return'].mean()
+# Calculate daily returns
+stock_data['Daily Return'] = close_prices.pct_change()
 
-                # Calculate total price change over the period
-                initial_price = stock_data['Close'].iloc[0]
-                final_price = stock_data['Close'].iloc[-1]
-                price_change_percent = ((final_price - initial_price) / initial_price) * 100
+# Calculate volatility and average return
+volatility = float(stock_data['Daily Return'].std())
+avg_daily_return = float(stock_data['Daily Return'].mean())
+
+# Calculate total price change
+initial_price = float(close_prices.iloc[0])
+final_price = float(close_prices.iloc[-1])
+price_change_percent = ((final_price - initial_price) / initial_price) * 100
 
                 st.write(f"- Daily Volatility (Std Dev of Daily Returns): **{volatility:.4f}**")
                 st.write(f"- Average Daily Return: **{avg_daily_return:.4f}**")
